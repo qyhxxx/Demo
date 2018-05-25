@@ -32,8 +32,6 @@ public class SaleController {
             totalCount += saleInfo.getSaleCount();
             totalAmount += saleInfo.getSaleAmount();
         }
-        //return totalAmount;
-
         model.addAttribute("period", period);
         model.addAttribute("para", para);
         model.addAttribute("list", list);
@@ -46,7 +44,7 @@ public class SaleController {
         String period = map.get("period");
         String para = map.get("para");
         if (para.equals("1")) {
-            return "select GT.type, G.gname, G.brand, G.status, sum(I.count) as saleCount, sum(I.totalprice) as saleAmount, " + period + "(curdate()) as time " +
+            return "select GT.type, G.gid, G.gname, G.brand, G.status, sum(I.count) as saleCount, sum(I.totalprice) as saleAmount, " + period + "(curdate()) as time " +
                     "from inventory I " +
                     "left join goods G on G.gid = I.gid " +
                     "left join goods_type GT on GT.typeid = G.typeid " +
@@ -61,5 +59,9 @@ public class SaleController {
                     "group by G.brand " +
                     "order by I.gid desc";
         }
+    }
+
+    public void export() {
+
     }
 }

@@ -50,6 +50,7 @@
                                     <th>品牌</th>
                                     <th>下架时间</th>
                                     <th>下架原因</th>
+                                    <th>管理</th>
                                 </tr>
                                 <tr th:each="goods : ${list}">
                                     <td th:text="${goods.type}"></td>
@@ -57,6 +58,8 @@
                                     <td th:text="${goods.brand}"></td>
                                     <td th:text="${#dates.format(goods.undtime, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${goods.reason}"></td>
+                                    <td><a th:href="@{/admin/undercarriage/recovery/goods/} + ${goods.gid}"><span class="badge bg-light-blue"> 恢复</span></a></td>
+                                </tr>
                             </table>
                         </div>
                         <!-- /.box-body -->

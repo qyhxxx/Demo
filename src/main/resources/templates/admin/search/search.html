@@ -135,14 +135,14 @@
                                         <td th:text="${goods.saleCount}"></td>
                                         <td th:text="${goods.saleAmount}"></td>
                                         <div th:switch="${goods.status}">
-                                            <td th:case="1" th:text="上架"></td>
-                                            <td th:case="0" th:text="下架"></td>
+                                            <td th:case="1"><span class="label label-primary">上架</span></td>
+                                            <td th:case="0"><span class="label label-danger">下架</span></td>
                                         </div>
                                         <td>
                                             <div th:switch="${goods.status}">
                                                 <div th:case="1">
                                                     <a th:href="@{/admin/goods/stock/} + ${goods.gid}"><span class="badge bg-green"> 进货</span></a>
-                                                    <a th:href="@{/admin/undercarriage/goods/} + ${goods.gid}"><span class="badge bg-light-blue"> 下架</span></a>
+                                                    <a th:href="@{/admin/undercarriage/goods/} + ${goods.gid}"><span class="badge bg-yellow"> 下架</span></a>
                                                 </div>
                                                 <div th:case="0">
                                                     <a th:href="@{/admin/goods/stock/} + ${goods.gid}"><span class="badge bg-green"> 进货</span></a>

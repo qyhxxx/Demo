@@ -12,7 +12,7 @@ public interface UndercarriageMapper {
     @Options(useGeneratedKeys = true, keyColumn = "uid", keyProperty = "uid")
     void insert(Undercarriage undercarriage);
 
-    @Select("select G.gname, G.brand, GT.type, U.undtime, U.reason " +
+    @Select("select G.gid, G.gname, G.brand, GT.type, U.undtime, U.reason " +
             "from undercarriage U " +
             "left join goods G on U.gid = G.gid " +
             "left join goods_type GT on GT.typeid = G.typeid " +
