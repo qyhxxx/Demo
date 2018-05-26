@@ -50,6 +50,7 @@
                                     <th>名称</th>
                                     <th>品牌</th>
                                     <th>进货时间</th>
+                                    <th>数量</th>
                                     <th>单价</th>
                                     <th>总价</th>
                                 </tr>
@@ -58,11 +59,13 @@
                                     <td th:text="${goods.gname}"></td>
                                     <td th:text="${goods.brand}"></td>
                                     <td th:text="${goods.invtime}"></td>
+                                    <td th:text="${goods.count}"></td>
                                     <td th:text="${goods.unitprice}"></td>
                                     <td th:text="${goods.totalprice}"></td>
                                 </tr>
                                 <tr>
                                     <th th:text="合计"></th>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>

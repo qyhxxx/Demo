@@ -1,17 +1,20 @@
 package com.example.demo.controller.admin;
 
+import com.example.demo.helper.Function;
+import com.example.demo.mapper.GoodsMapper;
 import com.example.demo.mapper.InventoryMapper;
 import com.example.demo.model.CompleteInfo;
+import com.example.demo.model.Goods;
+import com.example.demo.model.Inventory;
 import com.example.demo.model.SaleTable;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -25,6 +28,9 @@ import java.util.Map;
 public class SaleController {
     @Autowired
     private InventoryMapper inventoryMapper;
+
+    @Autowired
+    private GoodsMapper goodsMapper;
 
     @GetMapping("/{period}/list/{para}")
     public String listPage(@PathVariable(value = "period") String period, @PathVariable(value = "para") String para, Model model) {
@@ -132,5 +138,50 @@ public class SaleController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @GetMapping("/simulateBuy/{gid}")
+    public String buyPage(@PathVariable(value = "gid") int gid, Model model) {
+        Goods goods = goodsMapper.findByGid(gid);
+        model.addAttribute("goods", goods);
+        model.addAttribute("message", "");
+        return "/admin/sale/buy";
+    }
+
+    @PostMapping("/simulateBuy/{gid}")
+    @Transactional
+    public String buy(@PathVariable(value = "gid") int gid, @RequestParam(value = "count") int count, Model model) {
+        Goods goods = goodsMapper.findByGid(gid);
+        if (goods.getCount() - count < 0) {
+            model.addAttribute("goods", goods);
+            model.addAttribute("message", "库存不足");
+            return "/admin/sale/buy";
+        } else {
+            goods.setCount(goods.getCount() - count);
+            goodsMapper.updateCount(goods);
+            Inventory inventory = new Inventory();
+            inventory.setGid(goods.getGid());
+            inventory.setUid(1);
+            inventory.setInvtime(Function.getSqlDate());
+            inventory.setIssale(1);
+            inventory.setCount(count);
+            int price = goods.getPrice();
+            inventory.setUnitprice(price);
+            inventory.setTotalprice(count * price);
+            inventoryMapper.insert(inventory);
+            return "redirect:/admin/sale/record";
+        }
+    }
+
+    @GetMapping("/record")
+    public String record(Model model) {
+        List<CompleteInfo> record = inventoryMapper.saleRecord();
+        int totalAmount = 0;
+        for (CompleteInfo goods : record) {
+            totalAmount += goods.getTotalprice();
+        }
+        model.addAttribute("list", record);
+        model.addAttribute("totalAmount", totalAmount);
+        return "/admin/sale/record";
     }
 }

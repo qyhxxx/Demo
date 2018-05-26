@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>商品列表</title>
+    <title>模拟销售记录</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -32,63 +32,45 @@
     <div th:insert="/fragments/sidebar :: sidebar"></div>
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">   <!-- Main content -->
+    <div class="content-wrapper">
+        <!-- Main content -->
         <section class="content">
-            <!-- /.row -->
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
-                        <div th:switch="${typeid}" class="box-header">
-                            <h3 th:case="1" class="box-title">服装类商品</h3>
-                            <h3 th:case="2" class="box-title">食品类商品</h3>
+                        <div class="box-header">
+                            <div th:switch="${para}">
+                                <h3 class="box-title">销售记录</h3>
+                            </div>
                         </div>
-                        <!-- /.box-header -->
                         <div class="box-body table-responsive no-padding">
                             <table class="table table-hover">
                                 <tr>
+                                    <th>类别</th>
                                     <th>名称</th>
                                     <th>品牌</th>
-                                    <div th:switch="${typeid}">
-                                        <div th:case="1">
-                                            <th>颜色</th>
-                                            <th>大小</th>
-                                            <th>适合人群</th>
-                                        </div>
-                                        <div th:case="2">
-                                            <th>保质期截止日期</th>
-                                            <th>产地</th>
-                                        </div>
-                                    </div>
-                                    <th>价格</th>
+                                    <th>销售时间</th>
                                     <th>数量</th>
-                                    <th>状态</th>
-                                    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;管理</th>
-                                    <th>模拟销售</th>
+                                    <th>单价</th>
+                                    <th>总价</th>
                                 </tr>
                                 <tr th:each="goods : ${list}">
+                                    <td th:text="${goods.type}"></td>
                                     <td th:text="${goods.gname}"></td>
                                     <td th:text="${goods.brand}"></td>
-                                    <div th:switch="${typeid}">
-                                        <div th:case="1">
-                                            <td th:text="${goods.color}"></td>
-                                            <td th:text="${goods.size}"></td>
-                                            <td th:text="${goods.crowd}"></td>
-                                        </div>
-                                        <div th:case="2">
-                                            <td th:text="${#dates.format(goods.deadline, 'yyyy-MM-dd')}"></td>
-                                            <td th:text="${goods.provenance}"></td>
-                                        </div>
-                                    </div>
-                                    <td th:text="${goods.price}"></td>
+                                    <td th:text="${goods.invtime}"></td>
                                     <td th:text="${goods.count}"></td>
-                                    <div th:switch="${goods.status}">
-                                        <td th:case="1"><span class="label label-primary">上架</span></td>
-                                    </div>
-                                    <td>
-                                        <a th:href="@{/admin/goods/stock/} + ${goods.gid}"><span class="badge bg-green"> 进货</span></a>
-                                        <a th:href="@{/admin/undercarriage/goods/} + ${goods.gid}"><span class="badge bg-red"> 下架</span></a>
-                                    </td>
-                                    <td><a th:href="@{/admin/sale/simulateBuy/} + ${goods.gid}"><span class="badge bg-yellow"> 购买</span></a></td>
+                                    <td th:text="${goods.unitprice}"></td>
+                                    <td th:text="${goods.totalprice}"></td>
+                                </tr>
+                                <tr>
+                                    <th th:text="合计"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th th:text="${totalAmount}"></th>
                                 </tr>
                             </table>
                         </div>
@@ -97,9 +79,11 @@
                     <!-- /.box -->
                 </div>
             </div>
+            <!-- /.row -->
         </section>
         <!-- /.content -->
     </div>
+    <!-- /.content-wrapper -->
 
     <div th:insert="/fragments/footer :: footer"></div>
 </div>
@@ -109,7 +93,10 @@
 <script src="/AdminLTE-2.3.11/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="/AdminLTE-2.3.11/bootstrap/js/bootstrap.min.js"></script>
-<!-- Slimscroll -->
+<!-- DataTables -->
+<script src="/AdminLTE-2.3.11/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/AdminLTE-2.3.11/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
 <script src="/AdminLTE-2.3.11/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
 <script src="/AdminLTE-2.3.11/plugins/fastclick/fastclick.js"></script>
