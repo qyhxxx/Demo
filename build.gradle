@@ -37,4 +37,5 @@ dependencies {
     runtime('mysql:mysql-connector-java')
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
 }
