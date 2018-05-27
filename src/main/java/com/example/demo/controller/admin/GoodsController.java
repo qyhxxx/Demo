@@ -26,6 +26,13 @@ public class GoodsController {
     @GetMapping("/list/{typeid}")
     public String list(@PathVariable(value = "typeid") int typeid, Model model) {
         List<Goods> list = goodsMapper.list(typeid);
+        for (Goods goods : list) {
+            if (goods.getCount() < 5) {
+                goods.setIsshortage(1);
+            } else {
+                goods.setIsshortage(0);
+            }
+        }
         model.addAttribute("list", list);
         model.addAttribute("typeid", typeid);
         return "/admin/goods/list";

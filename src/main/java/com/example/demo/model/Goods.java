@@ -16,6 +16,7 @@ public class Goods {
     private int price;
     private int count;
     private int status;
+    private int isshortage;
 
     public int getGid() {
         return gid;
@@ -119,5 +120,13 @@ public class Goods {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getIsshortage() {
+        return isshortage;
+    }
+
+    public void setIsshortage(int isshortage) {
+        this.isshortage = isshortage;
     }
 }

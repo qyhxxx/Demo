@@ -66,7 +66,10 @@
                                     <th>模拟销售</th>
                                 </tr>
                                 <tr th:each="goods : ${list}">
-                                    <td th:text="${goods.gname}"></td>
+                                    <div th:switch="${goods.isshortage}">
+                                        <td th:case="1" th:text="${goods.gname} + '（库存不足）'" class="bg-red"></td>
+                                        <td th:case="0" th:text="${goods.gname}"></td>
+                                    </div>
                                     <td th:text="${goods.brand}"></td>
                                     <div th:switch="${typeid}">
                                         <div th:case="1">
