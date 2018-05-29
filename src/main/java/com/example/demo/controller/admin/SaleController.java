@@ -81,63 +81,37 @@ public class SaleController {
     @GetMapping("/{period}/export/{para}")
     public void export(@PathVariable(value = "period") String period, @PathVariable(value = "para") String para,
                        HttpServletResponse httpServletResponse) {
-        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-        HSSFSheet hssfSheet = hssfWorkbook.createSheet();
-        HSSFRow hssfRow = hssfSheet.createRow(0);
         SaleTable saleTable = this.getSaleTable(period, para);
         List<CompleteInfo> list = saleTable.list;
-        int size = list.size();
         int totalCount = saleTable.totalCount;
         int totalAmount = saleTable.totalAmount;
+        Object[] outfit, tail;
+        Object[][] cellData;
         if (para.equals("1")) {
-            hssfRow.createCell(0).setCellValue("类别");
-            hssfRow.createCell(1).setCellValue("名称");
-            hssfRow.createCell(2).setCellValue("品牌");
-            hssfRow.createCell(3).setCellValue("销售数量");
-            hssfRow.createCell(4).setCellValue("销售金额");
-            for (int i = 0; i < size; i++) {
+            outfit = new Object[]{"类别", "名称", "品牌", "销售数量", "销售金额"};
+            tail = new Object[]{"合计", "", "", totalCount, totalAmount};
+            cellData = new Object[list.size()][5];
+            for (int i = 0; i < list.size(); i++) {
                 CompleteInfo completeInfo = list.get(i);
-                hssfRow = hssfSheet.createRow(i + 1);
-                hssfRow.createCell(0).setCellValue(completeInfo.getType());
-                hssfRow.createCell(1).setCellValue(completeInfo.getGname());
-                hssfRow.createCell(2).setCellValue(completeInfo.getBrand());
-                hssfRow.createCell(3).setCellValue(completeInfo.getSaleCount());
-                hssfRow.createCell(4).setCellValue(completeInfo.getSaleAmount());
+                cellData[i][0] = completeInfo.getType();
+                cellData[i][1] = completeInfo.getGname();
+                cellData[i][2] = completeInfo.getBrand();
+                cellData[i][3] = completeInfo.getSaleCount();
+                cellData[i][4] = completeInfo.getSaleAmount();
             }
-            hssfRow = hssfSheet.createRow(size + 1);
-            hssfRow.createCell(0).setCellValue("合计");
-            hssfRow.createCell(1).setCellValue("");
-            hssfRow.createCell(2).setCellValue("");
-            hssfRow.createCell(3).setCellValue(totalCount);
-            hssfRow.createCell(4).setCellValue(totalAmount);
         } else {
-            hssfRow.createCell(0).setCellValue("品牌");
-            hssfRow.createCell(1).setCellValue("销售数量");
-            hssfRow.createCell(2).setCellValue("销售金额");
-            for (int i = 0; i < size; i++) {
+            outfit = new Object[]{"品牌", "销售数量", "销售金额"};
+            tail = new Object[]{"合计", totalCount, totalAmount};
+            cellData = new Object[list.size()][3];
+            for (int i = 0; i < list.size(); i++) {
                 CompleteInfo completeInfo = list.get(i);
-                hssfRow = hssfSheet.createRow(i + 1);
-                hssfRow.createCell(0).setCellValue(completeInfo.getBrand());
-                hssfRow.createCell(1).setCellValue(completeInfo.getSaleCount());
-                hssfRow.createCell(2).setCellValue(completeInfo.getSaleAmount());
+                cellData[i][0] = completeInfo.getBrand();
+                cellData[i][1] = completeInfo.getSaleCount();
+                cellData[i][2] = completeInfo.getSaleAmount();
             }
-            hssfRow = hssfSheet.createRow(size + 1);
-            hssfRow.createCell(0).setCellValue("合计");
-            hssfRow.createCell(1).setCellValue(totalCount);
-            hssfRow.createCell(2).setCellValue(totalAmount);
         }
-        try {
-            String filename = "销售情况.xls";
-            httpServletResponse.setContentType("application/ms-excel;charset=UTF-8");
-            httpServletResponse.setHeader("Content-Disposition", "attachment;filename="
-                    .concat(String.valueOf(URLEncoder.encode(filename, "UTF-8"))));
-            OutputStream outputStream = httpServletResponse.getOutputStream();
-            hssfWorkbook.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String filename = "销售情况";
+        Function.exportExcel(outfit, cellData, tail, filename, httpServletResponse);
     }
 
     @GetMapping("/simulateBuy/{gid}")
